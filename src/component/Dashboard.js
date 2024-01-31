@@ -61,13 +61,19 @@ const Dashboard = (props) => {
     const { data:dData, loading:dloading, error:dError, setConfig: dSetConfig } = useApi();
 
     const { data, loading, error, setConfig } = useApi();
-
+    
     const [imageList, setImageList] = useState([]);
 
     const [categoryList, setCategoryList] = useState([]);
 
     useEffect(() => {
-        console.log(data)
+        if(error) {
+            setCategoryList([])
+        }
+    },[error])
+
+
+    useEffect(() => {
         if(data && data.success) {
             if(activePanel === 'category') {
                 setCategoryList(data.data)
@@ -96,7 +102,7 @@ const Dashboard = (props) => {
     const handleUpdate = () => {
         if(payload.length) {
             const formData = new FormData();
-            if(activePanel === 'ingredient') {
+            if(activePanel === 'ingredients') {
                 payload.forEach((image) => {
                     formData.append(`name[]`, image.name);
                   });

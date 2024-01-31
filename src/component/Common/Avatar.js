@@ -47,7 +47,7 @@ export default ({ payload, setPayload, imageList, loading, categoryList, type, d
 
     const populateTabPills = (list, isNew) => {
         return list.map((d) => {
-            return <span style={isNew ? { border: '0.5px solid #ff003b' } : {}} key={d.id}>{d.name}<div className='delete-pills' onClick={() => deleteProduct(d.id)}>
+            return <span style={isNew ? { border: '0.5px solid #ff003b' } : {}} key={d.id}>{d.name}<div className='delete-pills' onClick={() => isNew ? deleteNewProduct(d.id)  : deleteProduct(d.id)}>
             <span>X</span>
         </div></span>
         })
