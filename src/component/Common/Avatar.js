@@ -3,7 +3,7 @@ import Modal from './Modal';
 import IngredientModal from './IngredientModal';
 import { BASE_IMAGE_URL } from '../Utilities/constant';
 
-export default ({ payload, setPayload, imageList, loading, categoryList, type, deleteProduct }) => {
+export default ({ payload, setPayload, imageList, loading, categoryList, type, deleteProduct, deleteNewProduct }) => {
     const [isModalopen, setIsModelOpen] = useState(false)
 
     const [isLarge, setIsLarge] = useState(false);
@@ -61,7 +61,7 @@ export default ({ payload, setPayload, imageList, loading, categoryList, type, d
                     // onClick={() => updatePayload(d.id)}
                     />
                     <span>{d.name}</span>
-                    <div className='delete-img' onClick={() => deleteProduct(d.id)}>
+                    <div className='delete-img' onClick={() => isNew ? deleteNewProduct(d.id)  : deleteProduct(d.id)}>
                         <span>X</span>
                     </div>
                 </div>

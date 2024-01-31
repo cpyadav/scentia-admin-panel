@@ -61,7 +61,6 @@ const Dashboard = (props) => {
     const { data:dData, loading:dloading, error:dError, setConfig: dSetConfig } = useApi();
 
     const { data, loading, error, setConfig } = useApi();
-    console.log(error)
 
     const [imageList, setImageList] = useState([]);
 
@@ -97,7 +96,7 @@ const Dashboard = (props) => {
     const handleUpdate = () => {
         if(payload.length) {
             const formData = new FormData();
-            if(activePanel !== 'ingredient') {
+            if(activePanel === 'ingredient') {
                 payload.forEach((image) => {
                     formData.append(`name[]`, image.name);
                   });
@@ -118,7 +117,7 @@ const Dashboard = (props) => {
                   });
                 uSetConfig({
                     ...updateConfig,
-                    url: `${BASE_URL}addnewproduct/${activePanel}`,
+                    url: `${BASE_URL}addnewProduct/${activePanel}`,
                     data: formData
                 })
             }
@@ -132,13 +131,15 @@ const Dashboard = (props) => {
         })
     }
 
+    const deleteNewProduct = (id) => {
+        dispatch({ type: SET_PAYLOAD, payload: payload.filter(d => d.id != id) })
+    }
+
     useEffect(() => {
         if(dData && dData.success) {
             setImageList(dData.data)
         }
     },[dData])
-
-    console.log(uloading, loading, dloading)
 
     return (
         <div className={`client-briefing-210`}>
@@ -159,6 +160,7 @@ const Dashboard = (props) => {
                         categoryList={categoryList}
                         type={activePanel}  
                         deleteProduct={deleteProduct}
+                        deleteNewProduct={deleteNewProduct}
                     />
                         <span onClick={handleUpdate} className='logout' style={{backgroundColor: 'green',right: '100px'}}>Update</span>
                 </div>
