@@ -58,7 +58,8 @@
     border-radius: 3px;
     border: 1px solid #AEAEAE;
     margin: 10px;
-    white-space: nowrap
+    white-space: nowrap;
+    position: relative;
   }
 
   .tab-pills > span:hover {
@@ -86,6 +87,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    position: relative;
   }
 
   .avatar-block > div.active {
@@ -102,7 +104,7 @@
     width: 124px;
     height: 124px;
     border: 0.5px solid #000000;
-    border-radius: 50%;
+    border-radius: 10px;
     margin: 20px;
   }
 
@@ -149,4 +151,32 @@ ol {
 .price-range label {
   padding: 10px;
   font-weight: 500;
+}
+
+.delete-img, .delete-pills {
+  width: 20px;
+    height: 20px;
+    /* border: 0.5px solid red; */
+    border-radius: 50%;
+    margin: 20px;
+    position: absolute;
+    /* background: rgba(0,0,0,0.5); */
+    display: flex;
+    align-items: center;
+    top: -10px;
+    justify-content: center;
+    /* opacity: 0; */
+    right: -10px;
+    background: crimson;
+    color: #fff;
+    opacity: 0.8;
+}
+
+.delete-pills {
+  margin: 0;
+}
+
+.delete-img:hover {
+  opacity: 1;
+  cursor: pointer;
 }

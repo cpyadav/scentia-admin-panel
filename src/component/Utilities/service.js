@@ -4,7 +4,7 @@ import axios from 'axios';
 const useApi = (initialConfig) => {
   const [config, setConfig] = useState(initialConfig);
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -14,15 +14,19 @@ const useApi = (initialConfig) => {
         const response = await axios(config);
         setData(response.data);
       } catch (error) {
+        console.error('Error fetching data:', error);
         setError(error);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+
+    if (config) {
+      fetchData();
+    }
   }, [config]);
 
-  return { data: data, loading, error, setConfig };
+  return { data, loading, error, setConfig };
 };
 
 export default useApi;

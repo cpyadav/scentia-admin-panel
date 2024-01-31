@@ -46,7 +46,7 @@ const Dashboard = (props) => {
 
     const updateConfig = {
         method: 'post',
-        url: `${BASE_URL}addnewproduct/${activePanel}`,
+        url: `${BASE_URL}addnewProduct/${activePanel}`,
         data: payload
         // You can include other Axios configuration options here
     }
@@ -56,26 +56,39 @@ const Dashboard = (props) => {
         url: `${BASE_URL}admincategorylist?type=${activePanel}`,
         // You can include other Axios configuration options here
     }
-    const { data:uData, loading:uloading, error, setConfig: uSetConfig } = useApi();
+    const { data:uData, loading:uloading, error:uError, setConfig: uSetConfig } = useApi();
 
-    const { data, loading, setConfig } = useApi();
+    const { data:dData, loading:dloading, error:dError, setConfig: dSetConfig } = useApi();
+
+    const { data, loading, error, setConfig } = useApi();
+    console.log(error)
 
     const [imageList, setImageList] = useState([]);
 
+    const [categoryList, setCategoryList] = useState([]);
+
     useEffect(() => {
+        console.log(data)
         if(data && data.success) {
+            if(activePanel === 'category') {
+                setCategoryList(data.data)
+            }
             setImageList(data.data)
         }
     },[data])
 
 
     useEffect(() => {
-        setConfig(fetchConfig)
+        dispatch({ type: SET_PAYLOAD, payload: initialPayload });
+        setConfig(fetchConfig);
     },[activePanel])
 
     useEffect(() => {
         if(uData && uData.success) {
             dispatch({ type: SET_PAYLOAD, payload: initialPayload });
+            if(activePanel === 'category') {
+                setCategoryList(uData.data)
+            }
             setImageList(uData.data)
         }
     },[uData])
@@ -84,17 +97,48 @@ const Dashboard = (props) => {
     const handleUpdate = () => {
         if(payload.length) {
             const formData = new FormData();
-
-            payload.forEach((image) => {
-                formData.append(`images`, image.image);
-                formData.append(`name[]`, image.name);
-              });
-              uSetConfig({
-                ...updateConfig,
-                data: formData
-            })
+            if(activePanel !== 'ingredient') {
+                payload.forEach((image) => {
+                    formData.append(`name[]`, image.name);
+                  });
+                uSetConfig({
+                    ...updateConfig,
+                    url: `${BASE_URL}addnewIngradient`,
+                    data: formData
+                })
+            }
+            else {
+                if(payload[0].catId) {
+                    formData.append('category', payload[0].catId)
+                }
+    
+                payload.forEach((image) => {
+                    formData.append(`images`, image.image);
+                    formData.append(`name[]`, image.name);
+                  });
+                uSetConfig({
+                    ...updateConfig,
+                    url: `${BASE_URL}addnewproduct/${activePanel}`,
+                    data: formData
+                })
+            }
         }
     }
+
+    const deleteProduct = (id) => {
+        dSetConfig({
+            method: 'post',
+            url: `${BASE_URL}deleteProduct/${activePanel}/${id}`
+        })
+    }
+
+    useEffect(() => {
+        if(dData && dData.success) {
+            setImageList(dData.data)
+        }
+    },[dData])
+
+    console.log(uloading, loading, dloading)
 
     return (
         <div className={`client-briefing-210`}>
@@ -105,13 +149,17 @@ const Dashboard = (props) => {
                 Logout
                 <LogoutOutlined />
             </span>
-            {(uloading || loading) && <Loader />}
+            {(uloading || loading || dloading) && <Loader />}
             <div className='client-briefing-210-child'>
                 <div className='client-briefing-210-gchild'>
                     <Avatar
                         imageList={imageList}
                         payload={payload}
-                        setPayload={(newPayload) => dispatch({ type: SET_PAYLOAD, payload: newPayload })}{...props} loading={loading}  />
+                        setPayload={(newPayload) => dispatch({ type: SET_PAYLOAD, payload: newPayload })}{...props} loading={loading}
+                        categoryList={categoryList}
+                        type={activePanel}  
+                        deleteProduct={deleteProduct}
+                    />
                         <span onClick={handleUpdate} className='logout' style={{backgroundColor: 'green',right: '100px'}}>Update</span>
                 </div>
             </div>

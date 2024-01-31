@@ -874,6 +874,7 @@ select {
   line-height: 24px;
   letter-spacing: 0em;
   text-align: left;
+  color: gray;
 }
 
 /* Removes awkward default styles on some inputs for iOS */
@@ -1335,30 +1336,44 @@ h3 {
   cursor: pointer;
 }
 
-.upload-box {
+.tab-pills .upload-box {
+  display: inline-block;
+    padding: 10px 20px;
+    border-radius: 3px;
+    border: 1px solid #AEAEAE;
+    margin: 10px;
+    white-space: nowrap;
+    background: #e3e3e3;
+    color: #000;
+}
+
+.avatar-block .upload-box {
   width: 124px;
   height: 124px;
   border: 0.5px dashed #000000;
-  border-radius: 50%;
+  /* border-radius: 50%; */
   margin: 20px;
   color: #000;
   background: #e3e3e3;
 }
 
 .modal-container {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 9;
+  position: fixed!important;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-content {
   border-radius: 10px;
   background: #fff;
-  height: 200px;
+  height: auto;
   padding: 50px;
   width: 400px;
   display: flex;
