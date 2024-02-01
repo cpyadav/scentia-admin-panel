@@ -4,20 +4,20 @@ import IngredientModal from './IngredientModal';
 import { BASE_IMAGE_URL, BASE_URL } from '../Utilities/constant';
 import useApi from '../Utilities/service';
 
-export default ({ payload, setPayload, imageList, loading, categoryList, type, deleteProduct, deleteNewProduct }) => {
+export default ({ payload, setPayload, imageList, loading, categoryList, type, deleteProduct, deleteNewProduct, onAssign }) => {
     const [isModalopen, setIsModelOpen] = useState(false);
     const [ingredientImgList, setIngredientImgList] = useState([]);
     const [isLarge, setIsLarge] = useState(false);
     const [ingradientIdList, setIngradientIdList] = useState([]);
     const [activeIngredient, setActiveIngredient] = useState();
-    
+
     const { data, error, setConfig } = useApi();
 
     useEffect(() => {
-        if(data && data.success) {
+        if (data && data.success) {
             setIngredientImgList(data.data)
         }
-    },[data])
+    }, [data])
 
     const fetchConfig = {
         method: 'get',
@@ -27,10 +27,10 @@ export default ({ payload, setPayload, imageList, loading, categoryList, type, d
 
 
     useEffect(() => {
-        if(type === 'ingredients') {
+        if (type === 'ingredients') {
             setConfig(fetchConfig);
         }
-    },[type])
+    }, [type])
 
     useEffect(() => {
         const largeImageThreshold = 124;
@@ -72,20 +72,20 @@ export default ({ payload, setPayload, imageList, loading, categoryList, type, d
     const populateTabPills = (list, isNew) => {
         return list.map((d) => {
             return <span className={`${d.id === activeIngredient ? 'active' : ''}`} onClick={() => {
-                if(!isNew) {
-                    setIngradientIdList(d.ingradient_id.split(','));
+                if (!isNew) {
+                    setIngradientIdList(d.ingradient_id ? d.ingradient_id.split(',') : []);
                     setActiveIngredient(d.id)
                 }
             }} style={isNew ? { border: '0.5px solid #ff003b' } : {}} key={d.id}>{d.name}<div className='delete-pills' onClick={(e) => {
                 e.stopPropagation();
-                if(activeIngredient === d.id) {
+                if (activeIngredient === d.id) {
                     setIngradientIdList([]);
                     setActiveIngredient();
                 }
-                isNew ? deleteNewProduct(d.id)  : deleteProduct(d.id)
+                isNew ? deleteNewProduct(d.id) : deleteProduct(d.id)
             }}>
-            <span>X</span>
-        </div></span>
+                    <span>X</span>
+                </div></span>
         })
     }
 
@@ -93,11 +93,11 @@ export default ({ payload, setPayload, imageList, loading, categoryList, type, d
         return list.map((d) => {
             return (
                 <div key={d.id}>
-                    <img key={d.id} style={isNew ? { border: '0.5px solid #ff003b' } : {}} className={'large'} src={d.image && typeof (d.image) === 'object' ? URL.createObjectURL(d.image) : BASE_IMAGE_URL + d.image}
+                    <img key={d.id} style={isNew ? { border: '0.5px solid #ff003b' } : {}} className={'small'} src={d.image && typeof (d.image) === 'object' ? URL.createObjectURL(d.image) : BASE_IMAGE_URL + d.image}
                     // onClick={() => updatePayload(d.id)}
                     />
                     <span>{d.name}</span>
-                    <div className='delete-img' onClick={() => isNew ? deleteNewProduct(d.id)  : deleteProduct(d.id)}>
+                    <div className='delete-img' onClick={() => isNew ? deleteNewProduct(d.id) : deleteProduct(d.id)}>
                         <span>X</span>
                     </div>
                 </div>
@@ -109,7 +109,7 @@ export default ({ payload, setPayload, imageList, loading, categoryList, type, d
         return list.map((d) => {
             return (
                 <div key={d.id}>
-                    <img key={d.id} className={'large'} src={BASE_IMAGE_URL + d.image}
+                    <img key={d.id} className={'small'} src={BASE_IMAGE_URL + d.image}
                     // onClick={() => updatePayload(d.id)}
                     />
                     <span>{d.name}</span>
@@ -135,29 +135,38 @@ export default ({ payload, setPayload, imageList, loading, categoryList, type, d
     return (
         <div className='columns' style={{ position: 'relative' }}>
             {
-                type === 'ingredients' ? 
-                <>
-                    <div className='tab-pills'>
+                type === 'ingredients' ?
+                    <>
+                        <div className='tab-pills'>
+                            {!isModalopen && <div className='upload-box' onClick={() => {
+                                setIsModelOpen(true);
+                                setIngradientIdList([]);
+                                setActiveIngredient();
+                            }}>
+                                Upload +
+                            </div>}
+                            {populateTabPills(payload, true)}
+                            {populateTabPills(imageList, false)}
+                        </div>
+                        <div className='avatar-block'>
+                            {activeIngredient && <>
+                                <div>
+                                    <button className='scentia-button' onClick={() => onAssign(ingradientIdList, activeIngredient)}>Assign</button>
+                                </div>
+                                {populateIngrdientImages(ingredientImgList)}
+                            </>}
+                        </div>
+                        {isModalopen && <IngredientModal setIsModelOpen={setIsModelOpen} handleNewList={handleNewList} />}
+                    </>
+                    :
+                    <div className={'avatar-block'}>
                         {!isModalopen && <div className='upload-box' onClick={() => setIsModelOpen(true)}>
                             Upload +
                         </div>}
-                        {populateTabPills(payload, true)}
-                        {populateTabPills(imageList, false)}
+                        {populateImages(payload, true)}
+                        {populateImages(imageList, false)}
+                        {isModalopen && <Modal type={type} categoryList={categoryList} setIsModelOpen={setIsModelOpen} handleNewList={handleNewList} />}
                     </div>
-                    <div className='avatar-block'>
-                        {activeIngredient && populateIngrdientImages(ingredientImgList)}
-                    </div>
-                    {isModalopen && <IngredientModal setIsModelOpen={setIsModelOpen} handleNewList={handleNewList} />}
-                </> 
-                : 
-                <div className={'avatar-block'}>
-                    {!isModalopen && <div className='upload-box' onClick={() => setIsModelOpen(true)}>
-                        Upload +
-                    </div>}
-                    {populateImages(payload, true)}
-                    {populateImages(imageList, false)}
-                    {isModalopen && <Modal type={type} categoryList={categoryList} setIsModelOpen={setIsModelOpen} handleNewList={handleNewList} />}
-                </div>
             }
         </div>
     )

@@ -43,6 +43,9 @@ const Dashboard = (props) => {
 
     // Destructuring state for easier use
     const { payload, activePanel, leftPanel } = state;
+    const [imageList, setImageList] = useState([]);
+
+    const [categoryList, setCategoryList] = useState([]);
 
     const updateConfig = {
         method: 'post',
@@ -56,15 +59,73 @@ const Dashboard = (props) => {
         url: `${BASE_URL}admincategorylist?type=${activePanel}`,
         // You can include other Axios configuration options here
     }
-    const { data:uData, loading:uloading, error:uError, setConfig: uSetConfig } = useApi();
 
-    const { data:dData, loading:dloading, error:dError, setConfig: dSetConfig } = useApi();
+    const assignConfig = {
+        method: 'post',
+        url: `${BASE_URL}assigningradients`,
+        // You can include other Axios configuration options here
+    }
+
+    const { data:updateData, loading:updateloading, error:updateError, setConfig: updateSetConfig } = useApi();
+
+    const { data:deleteData, loading:deleteloading, error:deleteError, setConfig: deleteSetConfig } = useApi();
+
+    const { data:assignData, loading:assignLoading, error:assignError, setConfig:assignSetConfig } = useApi();
 
     const { data, loading, error, setConfig } = useApi();
     
-    const [imageList, setImageList] = useState([]);
 
-    const [categoryList, setCategoryList] = useState([]);
+    const handleUpdate = () => {
+        if(payload.length) {
+            const formData = new FormData();
+            if(activePanel === 'ingredients') {
+                payload.forEach((image) => {
+                    formData.append(`name[]`, image.name);
+                  });
+                updateSetConfig({
+                    ...updateConfig,
+                    url: `${BASE_URL}addnewIngradient`,
+                    data: formData
+                })
+            }
+            else {
+                if(payload[0].catId) {
+                    formData.append('category', payload[0].catId)
+                }
+    
+                payload.forEach((image) => {
+                    formData.append(`images`, image.image);
+                    formData.append(`name[]`, image.name);
+                  });
+                updateSetConfig({
+                    ...updateConfig,
+                    url: `${BASE_URL}addnewProduct/${activePanel}`,
+                    data: formData
+                })
+            }
+        }
+    }
+
+    const deleteProduct = (id) => {
+        deleteSetConfig({
+            method: 'post',
+            url: `${BASE_URL}deleteProduct/${activePanel}/${id}`
+        })
+    }
+
+    const deleteNewProduct = (id) => {
+        dispatch({ type: SET_PAYLOAD, payload: payload.filter(d => d.id != id) })
+    }
+
+    const onAssign = (list, id) => {
+        assignSetConfig({
+            ...assignConfig,
+            data: {
+                ingradient_id: list.join(','),
+                id: id
+            }
+        });
+    }
 
     useEffect(() => {
         if(error) {
@@ -89,63 +150,26 @@ const Dashboard = (props) => {
     },[activePanel])
 
     useEffect(() => {
-        if(uData && uData.success) {
+        if(updateData && updateData.success) {
             dispatch({ type: SET_PAYLOAD, payload: initialPayload });
             if(activePanel === 'category') {
-                setCategoryList(uData.data)
+                setCategoryList(updateData.data)
             }
-            setImageList(uData.data)
+            setImageList(updateData.data)
         }
-    },[uData])
-    
-
-    const handleUpdate = () => {
-        if(payload.length) {
-            const formData = new FormData();
-            if(activePanel === 'ingredients') {
-                payload.forEach((image) => {
-                    formData.append(`name[]`, image.name);
-                  });
-                uSetConfig({
-                    ...updateConfig,
-                    url: `${BASE_URL}addnewIngradient`,
-                    data: formData
-                })
-            }
-            else {
-                if(payload[0].catId) {
-                    formData.append('category', payload[0].catId)
-                }
-    
-                payload.forEach((image) => {
-                    formData.append(`images`, image.image);
-                    formData.append(`name[]`, image.name);
-                  });
-                uSetConfig({
-                    ...updateConfig,
-                    url: `${BASE_URL}addnewProduct/${activePanel}`,
-                    data: formData
-                })
-            }
-        }
-    }
-
-    const deleteProduct = (id) => {
-        dSetConfig({
-            method: 'post',
-            url: `${BASE_URL}deleteProduct/${activePanel}/${id}`
-        })
-    }
-
-    const deleteNewProduct = (id) => {
-        dispatch({ type: SET_PAYLOAD, payload: payload.filter(d => d.id != id) })
-    }
+    },[updateData])
 
     useEffect(() => {
-        if(dData && dData.success) {
-            setImageList(dData.data)
+        if(deleteData && deleteData.success) {
+            setImageList(deleteData.data)
         }
-    },[dData])
+    },[deleteData])
+
+    useEffect(() => {
+        if(assignData && assignData.success) {
+            setImageList(assignData.data)
+        }
+    },[assignData])
 
     return (
         <div className={`client-briefing-210`}>
@@ -156,7 +180,7 @@ const Dashboard = (props) => {
                 Logout
                 <LogoutOutlined />
             </span>
-            {(uloading || loading || dloading) && <Loader />}
+            {(updateloading || loading || deleteloading || assignLoading) && <Loader />}
             <div className='client-briefing-210-child'>
                 <div className='client-briefing-210-gchild'>
                     <Avatar
@@ -167,6 +191,7 @@ const Dashboard = (props) => {
                         type={activePanel}  
                         deleteProduct={deleteProduct}
                         deleteNewProduct={deleteNewProduct}
+                        onAssign={onAssign}
                     />
                         <span onClick={handleUpdate} className='logout' style={{backgroundColor: 'green',right: '100px'}}>Update</span>
                 </div>
