@@ -153,7 +153,7 @@ ol {
   font-weight: 500;
 }
 
-.delete-img, .delete-pills {
+.delete-img, .delete-pills, .checkbox-img {
   width: 20px;
     height: 20px;
     /* border: 0.5px solid red; */
@@ -170,6 +170,15 @@ ol {
     background: crimson;
     color: #fff;
     opacity: 0.8;
+}
+
+.checkbox-img {
+  background: blue;
+}
+
+.checkbox-img input[type="checkbox"] {
+  padding: 0;
+  margin: 0;
 }
 
 .delete-pills {
