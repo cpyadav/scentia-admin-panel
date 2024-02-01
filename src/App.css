@@ -1340,7 +1340,7 @@ h3 {
   display: inline-block;
     padding: 10px 20px;
     border-radius: 3px;
-    border: 1px solid #AEAEAE;
+    border: 1px dashed #AEAEAE;
     margin: 10px;
     white-space: nowrap;
     background: #e3e3e3;
