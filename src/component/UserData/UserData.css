@@ -52,8 +52,10 @@
 
 .fragrance-details .columns {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
+    overflow: auto;
+    width: 100%;
 } 
 
 .fragrance-details .columns div {
