@@ -1,0 +1,70 @@
+.user-heading {
+    margin: 50px 0;
+}
+
+.user-heading h2 {
+    font-family: Inter;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 29px;
+    letter-spacing: 0.02em;
+    text-align: left;
+    color: #000000;
+}
+
+.client-details div {
+    display: flex;
+    padding: 10px 0;
+    align-items: center;
+}
+
+.client-details span, .product-details span, .consumer-details span, .fragrance-details span {
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0.02em;
+    color: #00000099;
+    padding: 10px 0;
+}
+
+.product-name {
+    width: 40%;
+}
+
+.client-details p, .product-details p, .consumer-details p, .fragrance-details p {
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19px;
+    letter-spacing: 0.02em;
+    color: #000000;
+    padding-left: 10px;
+    margin: 0;
+}
+
+.product-details div, .consumer-details div, .fragrance-details > div {
+    display: flex;
+    border: 1px solid #D9D9D9;
+    padding: 20px;
+    align-items: center;
+}
+
+.fragrance-details .columns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+
+.fragrance-details .columns div {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    margin: 20px;
+}
+
+.fragrance-details img {
+    width: 100px;
+    height: 100px;
+}

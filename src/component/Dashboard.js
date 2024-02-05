@@ -10,6 +10,7 @@ import { LEFT_PANEL } from './Utilities/constant'
 import Avatar from './Common/Avatar';
 
 import './Common/common.css';
+import { Link } from 'react-router-dom';
 
 const initialPayload = [];
 const initialLeftPanel = [...LEFT_PANEL];
@@ -173,13 +174,17 @@ const Dashboard = (props) => {
 
     return (
         <div className={`client-briefing-210`}>
-            <span className='logout' onClick={() => {
-                localStorage.removeItem('token');
-                props.setToken()
-            }}>
-                Logout
-                <LogoutOutlined />
-            </span>
+            <div className='header-link'>
+                <Link to="/user-data">User Data</Link>
+                <span onClick={handleUpdate} className='logout' style={{backgroundColor: 'green',right: '100px'}}>Update</span>
+                <span className='logout' onClick={() => {
+                    localStorage.removeItem('token');
+                    props.setToken()
+                }}>
+                    Logout
+                    <LogoutOutlined />
+                </span>
+            </div>
             {(updateloading || loading || deleteloading || assignLoading) && <Loader />}
             <div className='client-briefing-210-child'>
                 <div className='client-briefing-210-gchild'>
@@ -193,7 +198,6 @@ const Dashboard = (props) => {
                         deleteNewProduct={deleteNewProduct}
                         onAssign={onAssign}
                     />
-                        <span onClick={handleUpdate} className='logout' style={{backgroundColor: 'green',right: '100px'}}>Update</span>
                 </div>
             </div>
             <SidePanel leftPanel={leftPanel} activePanel={activePanel} setActivePanel={(panel) => dispatch({ type: SET_ACTIVE_PANEL, activePanel: panel })}  />

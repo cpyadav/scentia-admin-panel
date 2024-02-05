@@ -4,6 +4,7 @@ import './App.css';
 import Login from './component/Login';
 import Dashboard from './component/Dashboard';
 import PrivateRoute from './PrivateRoute';
+import UserData from './component/UserData/UserData';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -16,6 +17,10 @@ const App = () => {
         <Route
           path="/dashboard"
           element={token ? <Dashboard setToken={setToken} /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/user-data"
+          element={token ? <UserData setToken={setToken} /> : <Navigate to="/login" />}
         />
         {/* Optional: Redirect from the root to login */}
         <Route path="/" element={token ? <Dashboard /> : <Navigate to="/login" />} />

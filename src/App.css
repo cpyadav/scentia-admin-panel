@@ -1317,17 +1317,21 @@ h3 {
   text-decoration: underline;
 }
 
-.logout {
+.header-link {
   position: fixed;
   right: 0;
   top: 0;
   z-index: 99;
+  margin: 10px;
+}
+
+.logout {
   padding: 5px 15px;
   background: crimson;
   color: #fff;
   border-radius: 25px;
   font-size: 14px;
-  margin: 10px;
+  margin: 5px;
   opacity: 0.8;
 }
 
